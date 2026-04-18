@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thomas Kehler — Collective Intelligence, Belief Field Theory</title>
+<meta name="description" content="Notes, papers, and archive from fifty years of work in artificial intelligence — from the 1984 KEE demonstration on Computer Chronicles to current research on Generative Collective Intelligence and Belief Field Theory.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT,WONK@0,9..144,300..700,30..100,0..1;1,9..144,300..700,30..100,0..1&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ---------- tokens ---------- */
+:root {
+  --paper:        #F4EFE4;
+  --paper-2:      #EDE6D6;
+  --paper-3:      #E4DAC4;
+  --ink:          #181612;
+  --ink-2:        #3A3530;
+  --ink-3:        #6E665B;
+  --rule:         #C8BDA6;
+  --rule-soft:    #D8CEB8;
+  --accent:       #8A3016;   /* iron oxide */
+  --accent-2:     #2E3E5C;   /* deep ultramarine */
+  --highlight:    #C7A96B;
+  --measure:      64ch;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Newsreader", Georgia, serif;
+  font-optical-sizing: auto;
+  font-size: 18px;
+  line-height: 1.55;
+  font-weight: 380;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  background-image:
+    radial-gradient(1200px 700px at 85% -10%, rgba(138,48,22,0.05), transparent 60%),
+    radial-gradient(900px 600px at -10% 120%, rgba(46,62,92,0.05), transparent 60%);
+  background-attachment: fixed;
+}
+
+::selection { background: var(--accent); color: var(--paper); }
+
+/* ---------- type ---------- */
+.display {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "SOFT" 50, "WONK" 0, "opsz" 144;
+  font-weight: 420;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+}
+.mono {
+  font-family: "JetBrains Mono", ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--ink-3);
+}
+em { font-style: italic; color: var(--ink-2); }
+a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); transition: color .25s, border-color .25s; }
+a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- layout shell ---------- */
+.shell {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 4vw, 3rem);
+}
+
+/* ---------- header ---------- */
+.masthead {
+  padding: 2rem 0 1.25rem;
+  border-bottom: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 2rem;
+}
+.brand {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 1;
+  font-size: 1.45rem;
+  font-weight: 450;
+  letter-spacing: -0.01em;
+  border: none;
+  color: var(--ink);
+}
+.brand em {
+  font-style: italic;
+  color: var(--ink-2);
+  font-weight: 380;
+}
+nav.primary {
+  display: flex;
+  gap: 2rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+nav.primary a {
+  border: none;
+  color: var(--ink-2);
+  padding-bottom: 2px;
+  border-bottom: 1px solid transparent;
+}
+nav.primary a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- hero ---------- */
+.hero {
+  position: relative;
+  padding: clamp(4rem, 10vw, 8rem) 0 clamp(4rem, 8vw, 6rem);
+  overflow: hidden;
+}
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(2rem, 6vw, 5rem);
+  align-items: end;
+}
+.hero h1 {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 144, "SOFT" 60, "WONK" 1;
+  font-weight: 360;
+  font-size: clamp(2.4rem, 5.6vw, 5.2rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+  max-width: 14ch;
+}
+.hero h1 em {
+  font-style: italic;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  color: var(--accent);
+}
+.hero .deck {
+  font-family: "Newsreader", serif;
+  font-size: clamp(1rem, 1.3vw, 1.15rem);
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 42ch;
+  margin-top: 0.5rem;
+}
+.hero .meta {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem 3rem;
+}
+.hero .meta div span {
+  display: block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.35rem;
+}
+.hero .meta div strong {
+  font-family: "Newsreader", serif;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: var(--ink);
+}
+
+/* Signature SVG: the belief field */
+.field {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.55;
+  mask-image: radial-gradient(ellipse at 75% 40%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 75% 40%, black 0%, transparent 70%);
+}
+.field svg { width: 100%; height: 100%; display: block; }
+.field circle { fill: var(--ink); }
+.field .w1 { animation: drift 34s ease-in-out infinite; }
+.field .w2 { animation: drift 28s ease-in-out infinite reverse; }
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(0.6%, -0.8%); }
+}
+
+/* ---------- sections ---------- */
+section {
+  padding: clamp(3.5rem, 7vw, 6rem) 0;
+  border-top: 1px solid var(--rule);
+  position: relative;
+}
+.sec-head {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 2rem;
+  align-items: baseline;
+  margin-bottom: clamp(2rem, 4vw, 3.5rem);
+}
+.sec-head .num {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+.sec-head h2 {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 72, "SOFT" 40, "WONK" 0;
+  font-weight: 380;
+  font-size: clamp(1.8rem, 3.2vw, 2.75rem);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  max-width: 22ch;
+}
+.sec-head h2 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* ---------- current work ---------- */
+.threads {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 2rem;
+}
+.thread {
+  grid-column: span 6;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.25rem;
+}
+.thread .tag {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.thread h3 {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 72, "SOFT" 40;
+  font-weight: 450;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  margin-bottom: 0.9rem;
+  letter-spacing: -0.01em;
+}
+.thread p {
+  color: var(--ink-2);
+  max-width: 48ch;
+  margin-bottom: 1rem;
+}
+.thread .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin-top: 1rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+}
+.thread .links a {
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+}
+.thread .links a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+.collab {
+  grid-column: span 12;
+  border-top: 1px solid var(--rule);
+  padding-top: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 2rem;
+  align-items: start;
+}
+.collab .tag { grid-column: 1; }
+.collab-list {
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem 2rem;
+}
+.collab-list div strong {
+  font-family: "Fraunces", serif;
+  font-weight: 500;
+  font-size: 1.05rem;
+  display: block;
+  letter-spacing: -0.005em;
+}
+.collab-list div span {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+  color: var(--ink-3);
+  font-size: 0.9rem;
+}
+
+/* ---------- writing ---------- */
+.articles {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid var(--rule);
+}
+.article {
+  display: grid;
+  grid-template-columns: 110px 1fr 140px;
+  gap: 2rem;
+  padding: 1.6rem 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+  transition: background 0.3s;
+  position: relative;
+}
+.article:hover {
+  background: linear-gradient(90deg, transparent, var(--paper-2) 20%, var(--paper-2) 80%, transparent);
+}
+.article .date {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  padding-top: 0.3rem;
+}
+.article h3 {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 72, "SOFT" 30;
+  font-weight: 440;
+  font-size: 1.4rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+}
+.article h3 a { border: none; }
+.article h3 a:hover { color: var(--accent); }
+.article .subtitle {
+  color: var(--ink-2);
+  font-size: 0.98rem;
+  max-width: 62ch;
+  font-style: italic;
+}
+.article .venue {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  text-align: right;
+  padding-top: 0.35rem;
+}
+.more-link {
+  display: inline-block;
+  margin-top: 1.8rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border-bottom: 1px solid var(--ink);
+  padding-bottom: 2px;
+}
+.more-link:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- publications ---------- */
+.pub-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid var(--rule);
+}
+.pub-item {
+  display: grid;
+  grid-template-columns: 110px 1fr 140px;
+  gap: 2rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+.pub-item .date {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  padding-top: 0.3rem;
+}
+.pub-item h3 {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 72, "SOFT" 30;
+  font-weight: 440;
+  font-size: 1.3rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.45rem;
+}
+.pub-item .subtitle {
+  color: var(--ink-2);
+  font-size: 0.96rem;
+  max-width: 62ch;
+  font-style: italic;
+}
+.pub-item .venue {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  text-align: right;
+  padding-top: 0.35rem;
+}
+
+/* ---------- archive / 1984 ---------- */
+.archive-feature {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+  margin-bottom: 3rem;
+}
+.archive-plate {
+  position: relative;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 2.5rem 2rem;
+  aspect-ratio: 4/3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  border: 1px solid var(--ink);
+}
+.archive-plate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(244,239,228,0.04) 3px, rgba(244,239,228,0.04) 4px),
+    radial-gradient(circle at 30% 40%, rgba(244,239,228,0.12), transparent 55%);
+  pointer-events: none;
+}
+.archive-plate .scan-label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  opacity: 0.7;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 2;
+}
+.archive-plate .scan-title {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 144, "SOFT" 50, "WONK" 1;
+  font-weight: 380;
+  font-style: italic;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 2;
+}
+.archive-plate .scan-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  opacity: 0.75;
+  text-transform: uppercase;
+  position: relative;
+  z-index: 2;
+  border-top: 1px solid rgba(244,239,228,0.2);
+  padding-top: 1rem;
+}
+.archive-caption h3 {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 72;
+  font-weight: 450;
+  font-size: 1.5rem;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+.archive-caption p {
+  color: var(--ink-2);
+  max-width: 46ch;
+  margin-bottom: 1rem;
+}
+.archive-caption .cast {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-top: 1rem;
+  line-height: 1.7;
+}
+.archive-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+.archive-item {
+  display: grid;
+  grid-template-columns: 80px 1fr 120px;
+  gap: 1.5rem;
+  padding: 1.2rem 0;
+  border-top: 1px solid var(--rule);
+  align-items: baseline;
+}
+.archive-item:last-child { border-bottom: 1px solid var(--rule); }
+.archive-item .yr {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.85rem;
+  color: var(--ink-3);
+  font-weight: 500;
+}
+.archive-item h4 {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 72;
+  font-weight: 440;
+  font-size: 1.1rem;
+  letter-spacing: -0.005em;
+  margin-bottom: 0.25rem;
+}
+.archive-item p {
+  font-size: 0.92rem;
+  color: var(--ink-2);
+  font-style: italic;
+}
+.archive-item .kind {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  text-align: right;
+}
+
+/* ---------- arc / timeline ---------- */
+.arc {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+.arc-entry {
+  grid-column: span 4;
+  padding: 1.5rem 1.5rem 1.5rem 0;
+  border-right: 1px solid var(--rule-soft);
+  position: relative;
+}
+.arc-entry:nth-child(3n) { border-right: none; padding-right: 0; }
+.arc-entry::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 0;
+  width: 32px;
+  height: 2px;
+  background: var(--accent);
+}
+.arc-entry .year {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  margin-bottom: 0.5rem;
+}
+.arc-entry h3 {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 72;
+  font-weight: 460;
+  font-size: 1.15rem;
+  margin-bottom: 0.35rem;
+  letter-spacing: -0.005em;
+}
+.arc-entry p {
+  font-size: 0.92rem;
+  color: var(--ink-2);
+  line-height: 1.45;
+}
+
+/* ---------- bio ---------- */
+.bio {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+.bio-side .label {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 0.5rem;
+  display: block;
+}
+.bio-side dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem 1.2rem;
+  margin-bottom: 2rem;
+  font-size: 0.92rem;
+}
+.bio-side dt {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  padding-top: 0.15rem;
+}
+.bio-side dd {
+  font-family: "Newsreader", serif;
+  color: var(--ink);
+}
+.bio-prose p {
+  font-size: 1.08rem;
+  line-height: 1.65;
+  color: var(--ink);
+  margin-bottom: 1.3rem;
+  max-width: 62ch;
+}
+.bio-prose p:first-child::first-letter {
+  font-family: "Fraunces", serif;
+  font-variation-settings: "opsz" 144, "SOFT" 100, "WONK" 1;
+  font-weight: 400;
+  font-size: 4.4rem;
+  float: left;
+  line-height: 0.85;
+  padding: 0.35rem 0.75rem 0 0;
+  color: var(--accent);
+}
+
+/* ---------- footer ---------- */
+footer {
+  margin-top: 2rem;
+  padding: 3rem 0 2.5rem;
+  border-top: 1px solid var(--rule);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 2rem;
+}
+footer .colophon {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  line-height: 1.7;
+  max-width: 42ch;
+}
+footer .colophon em {
+  font-style: italic;
+  color: var(--ink-2);
+}
+footer .social {
+  display: flex;
+  gap: 1.8rem;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+footer .social a {
+  color: var(--ink-2);
+  border: none;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--rule);
+}
+footer .social a:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 2rem; }
+  .sec-head { grid-template-columns: 1fr; gap: 1rem; }
+  .thread { grid-column: span 12; }
+  .collab { grid-template-columns: 1fr; }
+  .collab .tag { grid-column: 1; }
+  .collab-list { grid-column: 1; grid-template-columns: 1fr 1fr; }
+  .archive-feature { grid-template-columns: 1fr; }
+  .article { grid-template-columns: 1fr; gap: 0.5rem; }
+  .pub-item { grid-template-columns: 1fr; gap: 0.5rem; }
+  .article .venue { text-align: left; }
+  .pub-item .venue { text-align: left; }
+  .arc-entry { grid-column: span 12; border-right: none; padding-right: 0; border-bottom: 1px solid var(--rule-soft); }
+  .bio { grid-template-columns: 1fr; }
+  .masthead { grid-template-columns: 1fr; gap: 1rem; }
+  nav.primary { gap: 1.2rem; }
+  footer { grid-template-columns: 1fr; }
+}
+@media (max-width: 540px) {
+  .collab-list { grid-template-columns: 1fr; }
+  .archive-item { grid-template-columns: 60px 1fr; }
+  .archive-item .kind { grid-column: 2; text-align: left; }
+  body { font-size: 17px; }
+}
+
+/* reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+/* skip link */
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+.skip:focus {
+  left: 1rem;
+  top: 1rem;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.5rem 1rem;
+  z-index: 100;
+  border: none;
+}
+</style>
+</head>
+<body>
+
+<a href="#main" class="skip">Skip to content</a>
+
+<div class="shell">
+
+<header class="masthead">
+  <a href="#" class="brand">Thomas&nbsp;P.&nbsp;Kehler <em>&nbsp;— presentations &amp; papers</em></a>
+  <nav class="primary" aria-label="Primary">
+    <a href="#work">Work</a>
+    <a href="#writing">Writing</a>
+    <a href="#publications">Publications</a>
+    <a href="#archive">Archive</a>
+    <a href="#arc">Arc</a>
+    <a href="#about">About</a>
+  </nav>
+</header>
+
+<main id="main">
+
+<!-- HERO ------------------------------------------------------------- -->
+<section class="hero" aria-labelledby="hero-h">
+  <div class="field" aria-hidden="true">
+    <svg viewBox="0 0 1400 800" preserveAspectRatio="xMidYMid slice">
+      <!-- Generated belief-field lattice: two interleaved drifting layers of nodes -->
+      <g class="w1" id="layerA"></g>
+      <g class="w2" id="layerB"></g>
+    </svg>
+  </div>
+
+  <div class="hero-inner">
+    <div>
+      <div class="mono" style="margin-bottom:1.5rem;">Fifty years · from symbolic AI to GCI</div>
+      <h1 id="hero-h">Intelligence is <em>collective</em>, even when we build it alone.</h1>
+    </div>
+    <div>
+      <p class="deck">
+        Research and writing on <em>Generative Collective Intelligence</em> — a physics-grounded account of how groups of humans and AI agents form, revise, and converge on shared belief. Supported by four companion papers on Belief Field Theory and the Semantic Hilbert Space.
+      </p>
+      <div class="meta">
+        <div><span>Chief Scientist</span><strong>CrowdSmart</strong></div>
+        <div><span>Co-founder</span><strong>Common Good AI</strong></div>
+        <div><span>Industry Faculty</span><strong>UC Berkeley</strong></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CURRENT WORK ----------------------------------------------------- -->
+<section id="work" aria-labelledby="work-h">
+  <div class="sec-head">
+    <div class="num">I · Current Work</div>
+    <h2 id="work-h">Several threads, <em>one question:</em> how do groups come to know things together?</h2>
+  </div>
+
+  <div class="threads">
+
+    <article class="thread">
+      <div class="tag">Theory · arXiv 2505.19167</div>
+      <h3>Generative Collective Intelligence</h3>
+      <p>A mathematical framework for collective reasoning that treats GCI as a distinct wave of AI — additive to generative models, not a replacement. The group's reasoning is modelled as a field over a graph of agents, with convergence properties that can be measured and tuned.</p>
+      <div class="links">
+        <a href="https://arxiv.org/abs/2505.19167">arXiv paper</a>
+        <a href="https://medium.com/@tom-kehler">commentary on Medium</a>
+      </div>
+    </article>
+
+    <article class="thread">
+      <div class="tag">Theory · companion paper</div>
+      <h3>Belief Field Theory</h3>
+      <p>Applies the Heisenberg exchange functional and statistical mechanics to the dynamics of collective deliberation. Collective belief excitations — <em>cogitons</em> — propagate across an agent graph in the same way magnons propagate through a magnetic lattice. A direct intellectual descendant of work begun in 1972 on ferromagnetic resonance.</p>
+      <div class="links">
+        <a href="#writing">related writing</a>
+        <a href="#archive">related talks</a>
+      </div>
+    </article>
+
+    <article class="thread">
+      <div class="tag">Practice · CrowdSmart</div>
+      <h3>The OS for Collective Reasoning</h3>
+      <p>CrowdSmart is the operational system where the theory is tested. It runs Bayesian belief networks, Fisher-Rao exploration, and spectral ranking on live organizational deliberations — turning the intelligence already inside an organization into something legible and measurable.</p>
+      <div class="links">
+        <a href="https://www.crowdsmart.ai">crowdsmart.ai</a>
+      </div>
+    </article>
+
+    <article class="thread">
+      <div class="tag">Practice · Common Good AI</div>
+      <h3>Civic &amp; Social Deliberation</h3>
+      <p>Co-founded with John Seely Brown and Kim Polese to bring the same collective-reasoning machinery to civic and social settings — places where the hardest problems are not technical but epistemic, and where ordinary disagreement is itself information.</p>
+      <div class="links">
+        <a href="#about">more context</a>
+      </div>
+    </article>
+
+    <div class="collab">
+      <div class="tag">Collaborators on the theoretical framework</div>
+      <div class="collab-list">
+        <div><strong>Scott Page</strong><span>University of Michigan</span></div>
+        <div><strong>Alex Pentland</strong><span>MIT</span></div>
+        <div><strong>Martin Reeves</strong><span>BCG Henderson Institute</span></div>
+        <div><strong>John Seely Brown</strong><span>Xerox PARC (fmr.)</span></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- WRITING ---------------------------------------------------------- -->
+<section id="writing" aria-labelledby="writing-h">
+  <div class="sec-head">
+    <div class="num">II · Writing</div>
+    <h2 id="writing-h">Selected essays, <em>mostly on Medium.</em></h2>
+  </div>
+
+  <div class="articles">
+
+    <a class="article" href="https://tom-kehler.medium.com/the-missing-layer-in-ai-from-individual-intelligence-to-collective-productivity-2ecd767252d3" style="border:none;">
+      <div class="date">Jan 2026</div>
+      <div>
+        <h3>The Missing Layer in AI</h3>
+        <div class="subtitle">From individual intelligence to collective productivity — why the next wave of AI value comes from scaffolding above the current models.</div>
+      </div>
+      <div class="venue">Data Driven Investor</div>
+    </a>
+
+    <a class="article" href="https://tom-kehler.medium.com/why-human-cognition-is-critical-claude-imagines-a-new-future-for-ai-5db698a64c7d" style="border:none;">
+      <div class="date">Jun 2025</div>
+      <div>
+        <h3>Why Human Cognition is Critical</h3>
+        <div class="subtitle">A working-session essay, written against the grain of the &ldquo;replace human judgement&rdquo; narrative.</div>
+      </div>
+      <div class="venue">Data Driven Investor</div>
+    </a>
+
+    <a class="article" href="https://tom-kehler.medium.com/the-missing-ingredient-for-accelerated-innovation-and-transformation-1e60cc8cd35f" style="border:none;">
+      <div class="date">Mar 2025</div>
+      <div>
+        <h3>The Missing Ingredient for Accelerated Innovation</h3>
+        <div class="subtitle">Team alignment in vision, perspective, and belief — something current generative AI cannot itself deliver.</div>
+      </div>
+      <div class="venue">Data Driven Investor</div>
+    </a>
+
+    <a class="article" href="https://tom-kehler.medium.com/enterprise-ai-the-pragmatic-value-of-hybrid-ai-models-56ccfbab8c41" style="border:none;">
+      <div class="date">Mar 2025</div>
+      <div>
+        <h3>Enterprise AI: The Pragmatic Value of Hybrid AI Models</h3>
+        <div class="subtitle">Building a trusted AI foundation for organizations that have to live with their decisions.</div>
+      </div>
+      <div class="venue">Data Driven Investor</div>
+    </a>
+
+    <a class="article" href="https://tom-kehler.medium.com/deepseek-and-crowdsmart-signal-a-game-changing-opportunity-for-the-agentic-enterprise-d501002eac71" style="border:none;">
+      <div class="date">Feb 2025</div>
+      <div>
+        <h3>DeepSeek and the Agentic Enterprise</h3>
+        <div class="subtitle">What the commoditization of model capability implies for the scaffolding that sits above it.</div>
+      </div>
+      <div class="venue">Data Driven Investor</div>
+    </a>
+
+    <a class="article" href="https://tom-kehler.medium.com/a-trust-building-ai-for-accelerating-innovation-and-organizational-transformation-ef77cfaeec90" style="border:none;">
+      <div class="date">Oct 2024</div>
+      <div>
+        <h3>Creating a Trusted Generative Collective Intelligence</h3>
+        <div class="subtitle">A multi-agent architecture for human and AI agents working together, with provenance preserved.</div>
+      </div>
+      <div class="venue">Data Driven Investor</div>
+    </a>
+
+    <a class="article" href="https://tom-kehler.medium.com/a-framework-for-a-human-centered-ai-based-on-the-laws-of-nature-a8bfbb233250" style="border:none;">
+      <div class="date">May 2023</div>
+      <div>
+        <h3>A Framework for a Human-Centered AI Based on the Laws of Nature</h3>
+        <div class="subtitle">Integrating natural and artificial intelligence — the piece that first set out the physics analogy explicitly.</div>
+      </div>
+      <div class="venue">Towards Data Science</div>
+    </a>
+
+    <a class="article" href="https://tom-kehler.medium.com/trusted-knowledge-8cda2af9d780" style="border:none;">
+      <div class="date">Jan 2023</div>
+      <div>
+        <h3>Integrating Human Co-creation and Generative AI</h3>
+        <div class="subtitle">Building trust and learning relevance in the weeks after ChatGPT was released.</div>
+      </div>
+      <div class="venue">Data Driven Investor</div>
+    </a>
+
+  </div>
+
+  <a class="more-link" href="https://tom-kehler.medium.com/">Full archive on Medium →</a>
+</section>
+
+<!-- ARCHIVE ---------------------------------------------------------- -->
+<section id="archive" aria-labelledby="archive-h">
+  <div class="sec-head">
+    <div class="num">III · Archive</div>
+    <h2 id="archive-h">Talks &amp; public record, <em>including the 1984 KEE demonstration</em> on Computer Chronicles.</h2>
+  </div>
+
+  <div class="archive-feature">
+    <a class="archive-plate" href="https://archive.org/details/CC1024_artificial_intelligence" style="border:none;color:var(--paper);">
+      <div class="scan-label">Computer Chronicles · PBS · recorded 16 Mar 1984</div>
+      <div class="scan-title">Artificial<br/>Intelligence<br/><span style="font-style:normal;font-size:0.55em;letter-spacing:0.1em;opacity:0.7;">S01 · Episode 1024</span></div>
+      <div class="scan-meta"><span>Archive.org</span><span>~23 min</span></div>
+    </a>
+
+    <div class="archive-caption">
+      <h3>&ldquo;An early look at artificial intelligence.&rdquo;</h3>
+      <p>
+        The first national-PBS broadcast on AI, recorded four months after the KEE System launched. I come in around the fourteen-minute mark to demonstrate KEE — the Knowledge Engineering Environment I co-created — applied to a nuclear-reactor diagnostic. The rest of the panel was extraordinary to be in a room with.
+      </p>
+      <div class="cast">
+        With · John McCarthy (Stanford) · Edward Feigenbaum (Stanford) · Nils Nilsson (SRI) · Herb Lechner (SRI) · Stewart Cheifet (host)
+      </div>
+    </div>
+  </div>
+
+  <div class="archive-list">
+
+    <div class="archive-item">
+      <div class="yr">2023</div>
+      <div>
+        <h4>The Second BGF High-level Dialogue on ChatGPT, GPT-4, and AI Assistants</h4>
+        <p>Boston Global Forum — panel discussion on where generative AI fits into decision-making at scale.</p>
+      </div>
+      <div class="kind"><a href="https://www.youtube.com/watch?v=Rtv7OoVjV_Y">Video →</a></div>
+    </div>
+
+    <div class="archive-item">
+      <div class="yr">2022—</div>
+      <div>
+        <h4>AI Scholarship in Vietnam · Saigon International University</h4>
+        <p>An ongoing program that honors strong AI research work coming out of Vietnam.</p>
+      </div>
+      <div class="kind">Program</div>
+    </div>
+
+    <div class="archive-item">
+      <div class="yr">2017</div>
+      <div>
+        <h4>Musings on the Free-Energy Principle and Collective Intelligence</h4>
+        <p>An early public articulation of the physics-to-cognition bridge that became Belief Field Theory.</p>
+      </div>
+      <div class="kind">Talk</div>
+    </div>
+
+    <div class="archive-item">
+      <div class="yr">—</div>
+      <div>
+        <h4>How to Create Planet-Friendly AI</h4>
+        <p>On compute efficiency, energy constraints, and where collective reasoning changes the energy ledger.</p>
+      </div>
+      <div class="kind">Talk</div>
+    </div>
+
+    <div class="archive-item">
+      <div class="yr">1984</div>
+      <div>
+        <h4>The KEE System &amp; the First Wave of AI</h4>
+        <p>Co-creator of the Knowledge Engineering Environment — the frames-based AI platform built at IntelliCorp, demonstrated widely throughout the 1980s.</p>
+      </div>
+      <div class="kind">Historical</div>
+    </div>
+
+  </div>
+
+  <a class="more-link" href="https://www.youtube.com/@tomkehler1642">More video on YouTube →</a>
+</section>
+
+<!-- ARC -------------------------------------------------------------- -->
+<section id="arc" aria-labelledby="arc-h">
+  <div class="sec-head">
+    <div class="num">IV · Arc of the Work</div>
+    <h2 id="arc-h">The thread that connects <em>ferromagnetic resonance in 1972</em> to belief fields in 2026.</h2>
+  </div>
+
+  <div class="arc">
+    <div class="arc-entry">
+      <div class="year">1972</div>
+      <h3>Drexel · Ph.D. in Applied Physics</h3>
+      <p>Dissertation on parametric instabilities and ferromagnetic resonance in polycrystalline films. The mathematics of coupled spins becomes, fifty years later, the mathematics of coupled beliefs.</p>
+    </div>
+    <div class="arc-entry">
+      <div class="year">late 1970s</div>
+      <h3>Texas Instruments · AI Research</h3>
+      <p>Led the AI research group. First extended encounter with symbolic systems, expert systems, and the engineering of machine reasoning — before leaving, on Feigenbaum's invitation, for IntelliCorp.</p>
+    </div>
+    <div class="arc-entry">
+      <div class="year">1983—1991</div>
+      <h3>IntelliCorp · CEO</h3>
+      <p>Co-creator of KEE. First AI/expert-systems company to go public (1983). Recruited from Carnegie Mellon, MIT and Stanford; around 27% of staff held PhDs.</p>
+    </div>
+    <div class="arc-entry">
+      <div class="year">1991—1997</div>
+      <h3>Connect · CEO</h3>
+      <p>One of the earliest pure e-commerce platform companies. Went public in 1997. An Apple spinout working with Steve Case and AOL in the formative years of the web.</p>
+    </div>
+    <div class="arc-entry">
+      <div class="year">2000—2010</div>
+      <h3>Recipio / Informative</h3>
+      <p>AI-enabled large-scale consumer brainstorming for LEGO, NBC, Procter &amp; Gamble. The first real operational footprint for what would become collective-intelligence tooling.</p>
+    </div>
+    <div class="arc-entry">
+      <div class="year">2015—</div>
+      <h3>CrowdSmart · Co-founder &amp; Chief Scientist</h3>
+      <p>Bayesian networks and transformer models — before &ldquo;LLM&rdquo; was a household acronym — applied to venture decision-making. Titan Fund I portfolio: 71% survival vs. the 38% baseline.</p>
+    </div>
+    <div class="arc-entry">
+      <div class="year">2023—</div>
+      <h3>Common Good AI · Co-founder</h3>
+      <p>With John Seely Brown. Extends the collective-intelligence framework into civic and social benefit contexts where the hardest work is epistemic, not computational.</p>
+    </div>
+    <div class="arc-entry">
+      <div class="year">2024—</div>
+      <h3>UC Berkeley · Industry Faculty</h3>
+      <p>Teaching and research affiliation around AI, collective intelligence, and human-centered systems.</p>
+    </div>
+    <div class="arc-entry">
+      <div class="year">Ongoing</div>
+      <h3>Belief Field Theory · GCI Framework</h3>
+      <p>Four companion papers — BFT, GCI Foundations, Semantic Hilbert Space, and the BFT Guide — developed with Scott Page, Alex Pentland, Martin Reeves, and JSB.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT ------------------------------------------------------------ -->
+<section id="about" aria-labelledby="about-h">
+  <div class="sec-head">
+    <div class="num">V · About</div>
+    <h2 id="about-h">A brief, factual account.</h2>
+  </div>
+
+  <div class="bio">
+    <aside class="bio-side">
+      <span class="label">At a glance</span>
+      <dl>
+        <dt>Ph.D.</dt><dd>Applied Physics, Drexel, 1972</dd>
+        <dt>Honor</dt><dd>NSF Fellow (Honorable Mention)</dd>
+        <dt>Patents</dt><dd>Four U.S. patents in probabilistic graphical networks &amp; decision systems</dd>
+        <dt>Publications</dt><dd>20+ publications in AI, NLP, and applied physics</dd>
+        <dt>Boards</dt><dd>Has served on the Information Technology Advisory Board, National Research Council</dd>
+        <dt>Field</dt><dd>AI · collective intelligence · knowledge representation · Bayesian networks</dd>
+        <dt>Based</dt><dd>Bay Area, California</dd>
+      </dl>
+    </aside>
+
+    <div class="bio-prose">
+      <p>
+        Dr. Thomas Kehler has worked in artificial intelligence for fifty years. He is Chief Scientist and Co-founder of CrowdSmart, Co-founder of Common Good AI with John Seely Brown, and holds an Industry Faculty appointment at UC Berkeley. He was previously CEO of IntelliCorp — the first AI/expert-systems company to go public — and CEO of Connect, one of the first e-commerce companies to go public.
+      </p>
+      <p>
+        His current research concerns <em>Generative Collective Intelligence</em>: a mathematical framework that treats collective human-and-AI reasoning as a field over a graph of agents, with convergence properties that can be measured, tuned, and engineered. The theoretical core — Belief Field Theory — is a direct descendant of his 1972 doctoral work on ferromagnetic resonance in polycrystalline films, and is being developed in collaboration with Scott Page (Michigan), Alex Pentland (MIT), Martin Reeves (BCG), and John Seely Brown.
+      </p>
+      <p>
+        He has authored over twenty publications in AI, natural-language processing, and physics, and holds four U.S. patents. He has served on the Information Technology Advisory Board of the National Research Council and on a range of corporate, academic, and non-profit boards.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PUBLICATIONS ----------------------------------------------------- -->
+<section id="publications" aria-labelledby="publications-h">
+  <div class="sec-head">
+    <div class="num">VI · Publications</div>
+    <h2 id="publications-h">Publications from your provided list (long-tail archive).</h2>
+  </div>
+
+  <div class="pub-list">
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Job+Creation+through+Sustainable+Investing+Using+Human-Centered+AI+An+Integral+Approach" style="border:none;">
+      <div class="date">2020</div>
+      <div>
+        <h3>Job Creation through Sustainable Investing Using Human-Centered AI: An Integral Approach</h3>
+        <div class="subtitle">Mariana Bozesan, Tom Kehler, Thomas Schulz.</div>
+      </div>
+      <div class="venue">Publication</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Thomas+P.+Kehler+Objects+and+Interoperability+Software+Magazine+1992" style="border:none;">
+      <div class="date">1992</div>
+      <div>
+        <h3>Objects and Interoperability</h3>
+        <div class="subtitle">T. P. Kehler, Software Magazine.</div>
+      </div>
+      <div class="venue">Software Magazine</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=The+Role+of+Frame-Based+Representation+in+Reasoning+CACM+28%289%29+904-920+1985" style="border:none;">
+      <div class="date">1985</div>
+      <div>
+        <h3>The Role of Frame-Based Representation in Reasoning</h3>
+        <div class="subtitle">Richard Fikes &amp; Tom Kehler, CACM 28(9): 904-920.</div>
+      </div>
+      <div class="venue">CACM</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Applications+Development+Using+a+Hybrid+Artificial+Intelligence+Development+System+AI+Magazine+5%283%29+41-54+1984" style="border:none;">
+      <div class="date">1984</div>
+      <div>
+        <h3>Applications Development Using a Hybrid Artificial Intelligence Development System</h3>
+        <div class="subtitle">John C. Kunz, Thomas P. Kehler, Michael D. Williams. AI Magazine 5(3): 41-54.</div>
+      </div>
+      <div class="venue">AI Magazine</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=KEE+The+Knowledge+Engineering+Environment+for+Industry+Systems+And+Software+3%281%29+212-224+1984" style="border:none;">
+      <div class="date">1984</div>
+      <div>
+        <h3>KEE: The Knowledge Engineering Environment for Industry</h3>
+        <div class="subtitle">T. P. Kehler and G. D. Clemenson. Systems and Software, 3(1): 212-224.</div>
+      </div>
+      <div class="venue">Systems and Software</div>
+    </a>
+
+    <a class="pub-item" href="https://doi.org/10.1109/TNS.1984.4333371" style="border:none;">
+      <div class="date">1983/1984</div>
+      <div>
+        <h3>Application of Artificial Intelligence to Triple Quadrupole Mass Spectrometry (TQMS)</h3>
+        <div class="subtitle">Carla M. Wong, Richard W. Crawford, John C. Kunz, Thomas P. Kehler. IEEE Transactions on Nuclear Science 31(1).</div>
+      </div>
+      <div class="venue">IEEE</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Intelligent+Assistance+for+Complex+Systems+Proceedings+of+the+ACM+82+Conference+Tom+Kehler" style="border:none;">
+      <div class="date">1982</div>
+      <div>
+        <h3>Intelligent Assistance for Complex Systems</h3>
+        <div class="subtitle">Tom Kehler et al., Proceedings of the ACM 82 Conference.</div>
+      </div>
+      <div class="venue">ACM</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Issues+in+the+Development+of+Natural+Language+Front-Ends+National+Computer+Conference+1981+Thomas+Kehler" style="border:none;">
+      <div class="date">1981</div>
+      <div>
+        <h3>Issues in the Development of Natural Language Front-Ends</h3>
+        <div class="subtitle">James Hendler, Thomas Kehler, Paul Michaelis, Brian Phillips, Kenneth Ross, Harry Tennant.</div>
+      </div>
+      <div class="venue">NCC</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Design+of+Interactive+Help+Systems+National+Educational+Computing+Conference+1981+T.+P.+Kehler+M.+Barnes" style="border:none;">
+      <div class="date">1981</div>
+      <div>
+        <h3>Design of Interactive Help Systems</h3>
+        <div class="subtitle">T. P. Kehler and M. Barnes, National Educational Computing Conference.</div>
+      </div>
+      <div class="venue">NECC</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=ATN+Grammar+Modeling+in+Applied+Linguistics+Proceedings+of+the+18th+Association+for+Computational+Linguistics+1980" style="border:none;">
+      <div class="date">1980</div>
+      <div>
+        <h3>ATN Grammar Modeling in Applied Linguistics</h3>
+        <div class="subtitle">T. P. Kehler and R. C. Woods, Proceedings of the 18th ACL.</div>
+      </div>
+      <div class="venue">ACL</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Alternatives+for+On-line+Help+Systems+Proceedings+of+the+8th+annual+ACM+SIGUCCS+conference+1980+Kehler+Barnes" style="border:none;">
+      <div class="date">1980</div>
+      <div>
+        <h3>Alternatives for On-line Help Systems</h3>
+        <div class="subtitle">T. P. Kehler and M. Barnes, Proceedings of the 8th annual ACM SIGUCCS conference on User Services.</div>
+      </div>
+      <div class="venue">SIGUCCS</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=SNOPAR+A+Grammar+Testing+System+American+Journal+of+Computational+Linguistics+1976+T.P.+Kehler" style="border:none;">
+      <div class="date">1976</div>
+      <div>
+        <h3>SNOPAR: A Grammar Testing System</h3>
+        <div class="subtitle">T. P. Kehler, American Journal of Computational Linguistics 55.</div>
+      </div>
+      <div class="venue">AJCL</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Low+Field+Resonance+and+Relaxation+in+Thin+Ferromagnetic+Films+AIP+Conference+Proceedings+1973+Kehler+Coren" style="border:none;">
+      <div class="date">1973</div>
+      <div>
+        <h3>Low Field Resonance and Relaxation in Thin Ferromagnetic Films</h3>
+        <div class="subtitle">T. P. Kehler and R. L. Coren, American Institute of Physics Conference Proceedings Vol. 18.</div>
+      </div>
+      <div class="venue">AIP</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Dynamic+Micromagnetic+Effects+in+Ferromagnetic+Resonance+AIP+Conference+Proceedings+1971+Kehler+Coren" style="border:none;">
+      <div class="date">1971</div>
+      <div>
+        <h3>Dynamic Micromagnetic Effects in Ferromagnetic Resonance</h3>
+        <div class="subtitle">T. P. Kehler and R. L. Coren, AIP Conference Proceedings Vol. 5, pp. 1123-1127.</div>
+      </div>
+      <div class="venue">AIP</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Static+Micromagnectic+Effects+in+Ferromagnetic+Resonance+AIP+Conference+Proceedings+1971+Kehler+Coren" style="border:none;">
+      <div class="date">1971</div>
+      <div>
+        <h3>Static Micromagnectic Effects in Ferromagnetic Resonance</h3>
+        <div class="subtitle">T. P. Kehler and R. L. Coren, AIP Conference Proceedings Vol. 5, pp. 1118-1122.</div>
+      </div>
+      <div class="venue">AIP</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Ripple+Field+Resonance+in+Cylindrical+Films+Journal+of+Applied+Physics+1971+Kehler+Coren" style="border:none;">
+      <div class="date">1971</div>
+      <div>
+        <h3>Ripple Field Resonance in Cylindrical Films</h3>
+        <div class="subtitle">T. P. Kehler and R. L. Coren, Journal of Applied Physics 42(4): 1433-1434.</div>
+      </div>
+      <div class="venue">JAP</div>
+    </a>
+
+    <a class="pub-item" href="https://scholar.google.com/scholar?q=Susceptibility+and+Ripple+Studies+in+Cylindrical+Films+Journal+of+Applied+Physics+1970+Kehler+Coren" style="border:none;">
+      <div class="date">1970</div>
+      <div>
+        <h3>Susceptibility and Ripple Studies in Cylindrical Films</h3>
+        <div class="subtitle">T. P. Kehler and R. L. Coren, Journal of Applied Physics 41(3): 1346-1347.</div>
+      </div>
+      <div class="venue">JAP</div>
+    </a>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="colophon">
+    <em>Thomaskehler.com</em> · notes &amp; archive · set in Fraunces, Newsreader, and JetBrains Mono · handwritten, no trackers · © Thomas P. Kehler
+  </div>
+  <div class="social">
+    <a href="https://www.linkedin.com/in/tomkehler/">LinkedIn</a>
+    <a href="https://tom-kehler.medium.com/">Medium</a>
+    <a href="https://www.youtube.com/@tomkehler1642">YouTube</a>
+    <a href="https://arxiv.org/abs/2505.19167">arXiv</a>
+  </div>
+</footer>
+
+</div><!-- /shell -->
+
+<script>
+// Generate the "belief field" signature — two lattices of dots with a
+// sine-modulated displacement. Deliberately quiet; meant to feel like
+// graph paper with a standing wave on it, not like a particle simulator.
+(function(){
+  const W = 1400, H = 800;
+  const A = document.getElementById('layerA');
+  const B = document.getElementById('layerB');
+  if(!A || !B) return;
+
+  function lattice(target, opts){
+    const {sx, sy, phase, amp, r, opacity} = opts;
+    let out = '';
+    for(let y = 0; y < H + sy; y += sy){
+      for(let x = 0; x < W + sx; x += sx){
+        const dx = Math.sin((x*0.006) + (y*0.004) + phase) * amp;
+        const dy = Math.cos((y*0.005) - (x*0.003) + phase) * amp * 0.6;
+        // radius modulated by phase — evokes a standing-wave intensity pattern
+        const rr = r + Math.sin((x*0.01) + (y*0.008) + phase) * r * 0.6;
+        out += '<circle cx="'+(x+dx).toFixed(2)+'" cy="'+(y+dy).toFixed(2)+'" r="'+Math.max(0.2, rr).toFixed(2)+'" opacity="'+opacity+'"/>';
+      }
+    }
+    target.innerHTML = out;
+  }
+
+  lattice(A, { sx: 36, sy: 36, phase: 0.0, amp: 4,   r: 1.2, opacity: 0.35 });
+  lattice(B, { sx: 52, sy: 52, phase: 1.6, amp: 2.5, r: 0.9, opacity: 0.22 });
+})();
+
+// Gentle reveal on scroll — restrained, CSS-only, no JS. The lattice
+// above is the only motion on the page; the rest of the site is quiet.
+</script>
+</body>
+</html>
